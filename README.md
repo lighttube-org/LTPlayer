@@ -2,6 +2,10 @@
 
 A video player made for [LightTube](https://github.com/kuylar/lighttube).
 
+## Screenshots
+
+![screenshot](https://user-images.githubusercontent.com/52961639/233783159-25f5e5b7-9a45-44d6-8fcc-25116f8a1ecb.png)
+
 ## Usage
 
 just import `src/player.js` & `src/player.css` into your HTML file, and then initialize the player with the following
