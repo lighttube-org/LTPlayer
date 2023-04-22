@@ -1,8 +1,8 @@
 class Player {
-	constructor(query, info, playerType = "html5") {
+	constructor(query, info) {
 		this.player = document.querySelector(query);
 		this.info = info;
-		this.playerType = playerType;
+		this.playerType = "html5";
 		if (!info) throw new Error("info must be provided while constructing a new Player instance!");
 		if (!info.chapters || info.chapters.length == 0) {
 			info.chapters = [{
@@ -25,6 +25,24 @@ class Player {
 
 		this.player.parentElement.insertBefore(this.root, this.player);
 		this.root.insertBefore(this.player, this.root.firstElementChild);
+
+		if (info.hlsManifest) {
+			if (Hls.isSupported()) {
+				this.playerType = "hls.js";
+				this.hlsjs = new Hls();
+				this.hlsjs.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+					console.log(`[HLS.JS] Manifest parsed with ${data.levels.length} quality levels`);
+					this.updateSelects();
+				});
+				this.hlsjs.on(Hls.Events.LEVEL_SWITCHED, (event, {level}) => {
+					console.log(`[HLS.JS] Switched to the quality level ${this.hlsjs.levels[level].height}p (${level})`);
+					this.updateSelects();
+				});
+				this.hlsjs.loadSource(info.hlsManifest);
+				// bind them together
+				this.hlsjs.attachMedia(this.player);
+			}
+		}
 
 		this.assignEvents();
 		this.updateButtons();
@@ -354,6 +372,27 @@ class Player {
 		this.elements.menus.speed.onchange = () => {
 			this.player.playbackRate = parseFloat(this.elements.menus.speed.value);
 		}
+		this.elements.menus.quality.onchange = () => {
+			switch (this.playerType) {
+				case "hls.js":
+					let level = this.elements.menus.quality.value;
+					this.hlsjs.nextLevel = parseInt(level);
+					break;
+				default:
+					console.error(`Unknown player type ${this.playerType}`)
+					break;
+			}
+		}
+		this.elements.menus.audioTracks.onchange = () => {
+			switch (this.playerType) {
+				case "hls.js":
+					this.hlsjs.audioTrack = parseInt(this.elements.menus.audioTracks.value);
+					break;
+				default:
+					console.error(`Unknown player type ${this.playerType}`)
+					break;
+			}
+		}
 
 		setInterval(() => {
 			if (this.player.buffered.length > 0)
@@ -418,7 +457,7 @@ class Player {
 				const elements = Array.from(this.player.children);
 				const videoTracks = elements.filter(x => x.tagName === "SOURCE");
 				const textTracks = elements.filter(x => x.tagName === "TRACK"
-					&& x.getAttribute("kind").toLowerCase() === "captions");
+					&& ["subtitles", "captions"].includes(x.getAttribute("kind").toLowerCase()));
 
 				if (videoTracks.length > 1) {
 					let foundQuality = false;
@@ -453,6 +492,73 @@ class Player {
 					if (!foundSubtitles)
 						subtitles[0].setAttribute("selected", "selected");
 
+					for (const subtitle of subtitles)
+						this.elements.menus.subtitles.appendChild(subtitle);
+
+					this.elements.menus.subtitles.parentElement.style.display = "flex"
+				}
+				break;
+			case "hls.js":
+				// quality levels
+				const addedQLs = [];
+				const qualityLevels = this.hlsjs.levels.filter(x => x.videoCodec.startsWith("avc1"))
+				const currentQL = this.hlsjs.currentLevel > 0 ? this.hlsjs.levels[this.hlsjs.currentLevel].height : undefined;
+				const qlElements = [];
+				if (this.hlsjs.autoLevelEnabled)
+					qlElements.push(this.createMenuOption(`Auto (${currentQL}p)`, -1, true));
+				else
+					qlElements.push(this.createMenuOption(`Auto`, -1));
+				for (const qualityLevel of qualityLevels) {
+					if (addedQLs.includes(qualityLevel.height)) continue;
+					addedQLs.push(qualityLevel.height);
+					qlElements.push(this.createMenuOption(
+						qualityLevel.height + "p",
+						this.hlsjs.levels.indexOf(qualityLevel),
+						qualityLevel.height === currentQL && !this.hlsjs.autoLevelEnabled)
+					);
+				}
+
+				while (this.elements.menus.quality.firstElementChild)
+					this.elements.menus.quality.children[0].remove();
+				for (const quality of qlElements)
+					this.elements.menus.quality.appendChild(quality);
+				this.elements.menus.quality.parentElement.style.display = "flex"
+
+				// audio tracks
+				if (this.hlsjs.audioTracks.length > 1) {
+					const atElements = [];
+					for (const audioTrack of this.hlsjs.audioTracks) {
+						atElements.push(this.createMenuOption(audioTrack.name, audioTrack.id, this.hlsjs.audioTrack == audioTrack.id))
+					}
+
+					while (this.elements.menus.audioTracks.firstElementChild)
+						this.elements.menus.audioTracks.children[0].remove();
+					for (const audioTrack of atElements)
+						this.elements.menus.audioTracks.appendChild(audioTrack);
+					this.elements.menus.audioTracks.parentElement.style.display = "flex"
+				}
+
+				// subtitles
+				// using HTML subtitles cus i couldnt get hls.js subtitles to work :33
+				const textTracks2 = Array.from(this.player.children).filter(x => x.tagName === "TRACK"
+					&& ["subtitles", "captions"].includes(x.getAttribute("kind").toLowerCase()));
+				console.log(textTracks2)
+				if (textTracks2.length > 0) {
+					let foundSubtitles = false;
+					let subtitles = [];
+					subtitles.push(this.createMenuOption("Off", null));
+					for (const track of textTracks2) {
+						const label = track.getAttribute("label") ?? track.getAttribute("srclang");
+						const src = track.getAttribute("src");
+						const selected = track.getAttribute("default") === "default";
+						if (selected) foundSubtitles = true;
+						subtitles.push(this.createMenuOption(label, src, selected));
+					}
+					if (!foundSubtitles)
+						subtitles[0].setAttribute("selected", "selected");
+
+					while (this.elements.menus.subtitles.firstElementChild)
+						this.elements.menus.subtitles.children[0].remove();
 					for (const subtitle of subtitles)
 						this.elements.menus.subtitles.appendChild(subtitle);
 
