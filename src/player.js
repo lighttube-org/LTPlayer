@@ -438,7 +438,7 @@ class Player {
 		seconds = seconds % 3600;
 		const minutes = Math.round(seconds / 60).toString().padStart(2, "0");
 		seconds = Math.round(seconds % 60).toString().padStart(2, "0");
-		return hours > 0 ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`;
+		return hours > 0 ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`.replaceAll("NaN", "--");
 	}
 
 	resizeProgressBar(barName, percentage, log = false) {
