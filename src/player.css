@@ -63,9 +63,18 @@
 	font-size: 18px;
 }
 
+.ltp-title__text {
+	text-overflow: ellipsis;
+	line-clamp: 1;
+	overflow: hidden;
+	line-height: 1rem;
+	height: 1rem;
+}
+
 .ltp-title__icon {
 	width: 40px;
 	height: 40px;
+	flex-shrink: 0;
 	border-radius: 24px;
 	margin: 10px 0;
 }
