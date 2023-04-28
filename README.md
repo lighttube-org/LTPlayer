@@ -60,3 +60,12 @@ You can use CSS variables to style parts of the player.
 | ltp-menu-background         | Menu background.                              | `rgba(28, 28, 28, .9)`                      |
 | ltp-menu-hover              | Menu item hover color.                        | `rgba(72, 72, 72, .9)`                      |
 | ltp-menu-text               | Menu item text color.                         | `#fff                                     ` |
+
+## Todo list
+
+[x] HLS Playback  
+[ ] Subtitles (by user agent)  
+[ ] Subtitles (custom, style-able)
+[ ] Hotkeys
+[ ] Preview thumbnails
+[ ] Endcards
