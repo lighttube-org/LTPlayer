@@ -3,6 +3,7 @@ class Player {
 		this.player = document.querySelector(query);
 		this.info = info;
 		this.playerType = "html5";
+		this.controlsHideTime = Number.MAX_SAFE_INTEGER
 		if (!info) throw new Error("info must be provided while constructing a new Player instance!");
 		if (!info.chapters || info.chapters.length == 0) {
 			info.chapters = [{
@@ -308,6 +309,10 @@ class Player {
 						this.updateButtons();
 					});
 		}
+		this.player.onmousemove = () => {
+			this.root.classList.remove("controls-hidden");
+			this.controlsHideTime = Date.now() + 5000;
+		}
 
 		this.elements.buttons.mute.onclick = () => {
 			this.player.muted = !this.player.muted;
@@ -336,6 +341,10 @@ class Player {
 		}
 
 		this.player.ontimeupdate = () => {
+			if (Date.now() > this.controlsHideTime && !this.root.classList.contains("controls-hidden"))
+				this.root.classList.add("controls-hidden");
+			else if (Date.now() < this.controlsHideTime && this.root.classList.contains("controls-hidden"))
+				this.root.classList.remove("controls-hidden");
 			this.resizeProgressBar("played", (this.player.currentTime / this.player.duration) * 100)
 		}
 

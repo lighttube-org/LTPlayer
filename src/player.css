@@ -29,6 +29,7 @@
 	position: relative;
 	background: #000;
 	display: flex;
+	overflow: hidden;
 }
 
 .ltp-root > video {
@@ -246,4 +247,14 @@
 
 .ltp-menuitem > select {
 	width: 100px;
+}
+
+.ltp-root.controls-hidden .ltp-controls,
+.ltp-root.controls-hidden .ltp-progress-container,
+.ltp-root.controls-hidden .ltp-title,
+.ltp-root.controls-hidden .ltp-gradient-top,
+.ltp-root.controls-hidden .ltp-gradient-bottom
+{
+	transition: opacity 100ms linear;
+	opacity: 0;
 }
