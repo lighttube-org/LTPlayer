@@ -383,6 +383,11 @@ class Player {
 		}
 		this.elements.menus.quality.onchange = () => {
 			switch (this.playerType) {
+				case "html5":
+					const t = this.player.currentTime;
+					this.player.src = this.elements.menus.quality.value;
+					this.player.currentTime = t;
+					break;
 				case "hls.js":
 					let level = this.elements.menus.quality.value;
 					this.hlsjs.nextLevel = parseInt(level);
