@@ -407,6 +407,15 @@ class Player {
 					break;
 			}
 		}
+		this.elements.menus.subtitles.onchange = () => {
+			for (let i = 0; i < this.player.textTracks.length; i++) {
+				this.player.textTracks[i].mode = "hidden";
+			}
+
+			if (this.elements.menus.subtitles.value === "null") return;
+			const track = Array.from(this.player.textTracks).filter(x => x.label === this.elements.menus.subtitles.value)[0];
+			track.mode = "showing";
+		}
 
 		setInterval(() => {
 			if (this.player.buffered.length > 0)
@@ -470,8 +479,7 @@ class Player {
 			case "html5":
 				const elements = Array.from(this.player.children);
 				const videoTracks = elements.filter(x => x.tagName === "SOURCE");
-				const textTracks = elements.filter(x => x.tagName === "TRACK"
-					&& ["subtitles", "captions"].includes(x.getAttribute("kind").toLowerCase()));
+				const textTracks = Array.from(this.player.textTracks).filter(x => x.groupId === "vtt");
 
 				if (videoTracks.length > 1) {
 					let foundQuality = false;
@@ -497,11 +505,10 @@ class Player {
 					let subtitles = [];
 					subtitles.push(this.createMenuOption("Off", null));
 					for (const track of textTracks) {
-						const label = track.getAttribute("label") ?? track.getAttribute("srclang");
-						const src = track.getAttribute("src");
-						const selected = track.getAttribute("default") === "default";
+						const label = track.label;
+						const selected = track.mode === "showing";
 						if (selected) foundSubtitles = true;
-						subtitles.push(this.createMenuOption(label, src, selected));
+						subtitles.push(this.createMenuOption(label, label, selected));
 					}
 					if (!foundSubtitles)
 						subtitles[0].setAttribute("selected", "selected");
@@ -554,19 +561,17 @@ class Player {
 
 				// subtitles
 				// using HTML subtitles cus i couldnt get hls.js subtitles to work :33
-				const textTracks2 = Array.from(this.player.children).filter(x => x.tagName === "TRACK"
-					&& ["subtitles", "captions"].includes(x.getAttribute("kind").toLowerCase()));
+				const textTracks2 = Array.from(this.player.textTracks).filter(x => x.groupId === "vtt");
 				console.log(textTracks2)
 				if (textTracks2.length > 0) {
 					let foundSubtitles = false;
 					let subtitles = [];
 					subtitles.push(this.createMenuOption("Off", null));
 					for (const track of textTracks2) {
-						const label = track.getAttribute("label") ?? track.getAttribute("srclang");
-						const src = track.getAttribute("src");
-						const selected = track.getAttribute("default") === "default";
+						const label = track.label;
+						const selected = track.mode === "showing";
 						if (selected) foundSubtitles = true;
-						subtitles.push(this.createMenuOption(label, src, selected));
+						subtitles.push(this.createMenuOption(label, label, selected));
 					}
 					if (!foundSubtitles)
 						subtitles[0].setAttribute("selected", "selected");
