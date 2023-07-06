@@ -18,6 +18,10 @@
 	--ltp-menu-background: rgba(28, 28, 28, .9);
 	--ltp-menu-hover: rgba(72, 72, 72, .9);
 	--ltp-menu-text: #fff;
+
+	--ltp-storyboard-background: rgba(72, 72, 72, .9);
+	--ltp-time-popup-text: #fff;
+	--ltp-time-popup-background: rgba(28, 28, 28, .9);
 }
 
 .ltp-root, .ltp-root * {
@@ -262,8 +266,36 @@
 .ltp-root.controls-hidden .ltp-progress-container,
 .ltp-root.controls-hidden .ltp-title,
 .ltp-root.controls-hidden .ltp-gradient-top,
-.ltp-root.controls-hidden .ltp-gradient-bottom
-{
+.ltp-root.controls-hidden .ltp-gradient-bottom {
 	transition: opacity 100ms linear;
 	opacity: 0;
+}
+
+.ltp-storyboard-container {
+	width: 175px;
+	height: 110px;
+	display: none;
+	flex-direction: column;
+	justify-content: end;
+	align-items: end;
+	left: 0;
+	position: absolute;
+	gap: 4px;
+	bottom: 64px;
+	padding: 0 8px;
+}
+
+.ltp-storyboard-image {
+	width: 100%;
+	aspect-ratio: 16/9;
+	background-color: var(--ltp-storyboard-background);
+}
+
+.ltp-storyboard-text {
+	color: var(--ltp-time-popup-text);
+	text-align: center;
+	background-color: var(--ltp-time-popup-background);
+	width: fit-content;
+	margin: 0 auto;
+	padding: 4px;
 }

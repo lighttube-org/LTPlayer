@@ -13,6 +13,11 @@ class Player {
 				name: ""
 			}]
 		}
+
+		if (info.storyboard && info.storyboard.type == "yt_l1") {
+			this.storyboardImage = new Image();
+			this.storyboardImage.src = info.storyboard.src;
+		}
 		this.root = this.buildPlayerElement({
 			author: info.author,
 			title: info.title,
@@ -176,6 +181,19 @@ class Player {
 		element5.appendChild(buttonMinimize);
 		container.appendChild(element5);
 
+		const previewContainer = document.createElement("DIV");
+		previewContainer.classList.add("ltp-storyboard-container");
+
+		const previewContainerImg = document.createElement("CANVAS");
+		previewContainerImg.classList.add("ltp-storyboard-image");
+		previewContainer.appendChild(previewContainerImg);
+
+		const previewContainerText = document.createElement("DIV");
+		previewContainerText.classList.add("ltp-storyboard-text");
+		previewContainer.appendChild(previewContainerText);
+
+		container.appendChild(previewContainer);
+
 		const menu = document.createElement("DIV");
 		menu.setAttribute("class", "ltp-menu");
 
@@ -258,6 +276,12 @@ class Player {
 				quality: menuitemQualitySelect,
 				subtitles: menuitemSubtitlesSelect,
 				audioTracks: menuitemAudioTracksSelect
+			},
+			storyboard: {
+				container: previewContainer,
+				image: previewContainerImg,
+				context: previewContainerImg.getContext("2d"),
+				text: previewContainerText
 			}
 		}
 
@@ -370,6 +394,18 @@ class Player {
 
 		this.elements.progressBarSections[0].background.parentElement.onclick = event => {
 			this.player.currentTime = this.percentageFromMouseOverEvent(event, this.elements.progressBarSections[0].background.parentElement) * this.player.duration
+		}
+
+		this.elements.progressBarSections[0].background.parentElement.onmousemove = event => {
+			this.updateStoryboard(this.percentageFromMouseOverEvent(event, this.elements.progressBarSections[0].background.parentElement))
+		}
+
+		this.elements.progressBarSections[0].background.parentElement.onmouseenter = event => {
+			this.updateStoryboard(true);
+		}
+
+		this.elements.progressBarSections[0].background.parentElement.onmouseleave = event => {
+			this.updateStoryboard(false);
 		}
 
 		this.elements.buttons.settings.onclick = () => {
@@ -588,6 +624,37 @@ class Player {
 			default:
 				console.error(`Unknown player type: ${this.playerType}`)
 				break;
+		}
+	}
+
+	updateStoryboard(progress) {
+		if (typeof (progress) === "boolean") {
+			if (progress)
+				this.elements.storyboard.container.style.display = "flex";
+			else
+				this.elements.storyboard.container.style.display = "none";
+		} else {
+			let seconds = progress * this.player.duration;
+			this.elements.storyboard.text.innerText = this.timestampFromMs(seconds);
+
+			if (progress < .5) {
+				this.elements.storyboard.container.style.left = `calc(${Math.max(0, progress * 100)}% - 87.5px)`;
+				this.elements.storyboard.container.style.right = "unset";
+			} else {
+				this.elements.storyboard.container.style.right = `calc(${Math.max(0, (1 - progress) * 100)}% - 87.5px)`;
+				this.elements.storyboard.container.style.left = "unset";
+			}
+
+			// update storyboard image
+			// todo: youtube L2 storyboards
+
+			if (this.storyboardImage == null) {
+				this.elements.storyboard.image.style.display = "none";
+			} else {
+				let x = Math.floor((progress * 10 - Math.trunc(progress * 10)) * 10);
+				let y = Math.floor(progress * 10);
+				this.elements.storyboard.context.drawImage(this.storyboardImage, x * 48, y * 27, 48, 27, 0, 0, this.elements.storyboard.image.width, this.elements.storyboard.image.height)
+			}
 		}
 	}
 }
