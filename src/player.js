@@ -1,6 +1,7 @@
 class Player {
 	constructor(query, info) {
 		this.player = document.querySelector(query);
+		this.player.removeAttribute("controls");
 		this.info = info;
 		this.playerType = "html5";
 		this.controlsHideTime = Number.MAX_SAFE_INTEGER
