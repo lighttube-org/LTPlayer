@@ -69,7 +69,7 @@ You can use CSS variables to style parts of the player.
 [x] HLS Playback  
 [x] Subtitles (by user agent)  
 [ ] Subtitles (custom, style-able)  
-[ ] Hotkeys  
+[x] Hotkeys  
 [x] Preview thumbnails (storyboards)  
 [ ] High quality preview thumbnails (YouTube L2)  
 [ ] Endcards  

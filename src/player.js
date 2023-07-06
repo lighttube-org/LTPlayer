@@ -257,6 +257,7 @@ class Player {
 		menu.style.display = "none";
 
 		this.elements = {
+			root: container,
 			authorIcon,
 			videoTitle,
 			timestamp,
@@ -452,6 +453,12 @@ class Player {
 			if (this.elements.menus.subtitles.value === "null") return;
 			const track = Array.from(this.player.textTracks).filter(x => x.label === this.elements.menus.subtitles.value)[0];
 			track.mode = "showing";
+		}
+
+		window.onkeydown = event => {
+			if (!this.elements.root.contains(event.target)) return;
+			if (event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) return;
+			this.handleHotkey(event.key)
 		}
 
 		setInterval(() => {
@@ -655,6 +662,65 @@ class Player {
 				let y = Math.floor(progress * 10);
 				this.elements.storyboard.context.drawImage(this.storyboardImage, x * 48, y * 27, 48, 27, 0, 0, this.elements.storyboard.image.width, this.elements.storyboard.image.height)
 			}
+		}
+	}
+
+	handleHotkey(key) {
+		switch (key.toLowerCase()) {
+			case " ":
+			case "k":
+				if (this.player.paused)
+					this.player.play();
+				else
+					this.player.pause();
+				break;
+			case "m":
+				this.elements.buttons.mute.click();
+				break;
+			case "j":
+			case "arrowleft":
+				this.player.currentTime -= 5;
+				break;
+			case "l":
+			case "arrowright":
+				this.player.currentTime += 5;
+				break;
+			case "0":
+				this.player.currentTime = this.player.duration * 0.0;
+				break;
+			case "1":
+				this.player.currentTime = this.player.duration * 0.1;
+				break;
+			case "2":
+				this.player.currentTime = this.player.duration * 0.2;
+				break;
+			case "3":
+				this.player.currentTime = this.player.duration * 0.3;
+				break;
+			case "4":
+				this.player.currentTime = this.player.duration * 0.4;
+				break;
+			case "5":
+				this.player.currentTime = this.player.duration * 0.5;
+				break;
+			case "6":
+				this.player.currentTime = this.player.duration * 0.6;
+				break;
+			case "7":
+				this.player.currentTime = this.player.duration * 0.7;
+				break;
+			case "8":
+				this.player.currentTime = this.player.duration * 0.8;
+				break;
+			case "9":
+				this.player.currentTime = this.player.duration * 0.9;
+				break;
+			case "f":
+				if (document.fullscreenElement != null)
+					this.elements.buttons.minimize.click();
+				else
+					this.elements.buttons.fullscreen.click();
+				break;
 		}
 	}
 }
