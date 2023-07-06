@@ -64,8 +64,9 @@ You can use CSS variables to style parts of the player.
 ## Todo list
 
 [x] HLS Playback  
-[ ] Subtitles (by user agent)  
-[ ] Subtitles (custom, style-able)
-[ ] Hotkeys
-[ ] Preview thumbnails
-[ ] Endcards
+[x] Subtitles (by user agent)  
+[ ] Subtitles (custom, style-able)  
+[ ] Hotkeys  
+[ ] Preview thumbnails  
+[ ] Endcards  
+[ ] Playback Segments  
