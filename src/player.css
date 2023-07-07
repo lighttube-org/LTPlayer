@@ -22,6 +22,13 @@
 	--ltp-storyboard-background: rgba(72, 72, 72, .9);
 	--ltp-time-popup-text: #fff;
 	--ltp-time-popup-background: rgba(28, 28, 28, .9);
+
+	--ltp-skip-background: #0007;
+	--ltp-skip-text: #ccc;
+	--ltp-skip-border: 1px solid #ccc;
+	--ltp-skip-hover-background: #0009;
+	--ltp-skip-hover-text: #fff;
+	--ltp-skip-hover-border: 1px solid #fff;
 }
 
 .ltp-root, .ltp-root * {
@@ -139,6 +146,16 @@
 
 .ltp-progress:hover > .ltp-progress__played {
 	margin-top: -9px;
+}
+
+.ltp-progress__segment {
+	transition: all linear 100ms;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	opacity: 50%;
+	z-index: 1;
+	pointer-events: none;
 }
 
 .ltp-controls {
@@ -298,4 +315,23 @@
 	width: fit-content;
 	margin: 0 auto;
 	padding: 4px;
+}
+
+.ltp-skip {
+	position: absolute;
+	right: 0;
+	bottom: 128px;
+	padding: 8px 16px;
+	display: none;
+	font-size: larger;
+	cursor: pointer;
+	background-color: var(--ltp-skip-background);
+	color: var(--ltp-skip-text);
+	border: var(--ltp-skip-border);
+}
+
+.ltp-skip:hover {
+	background-color: var(--ltp-skip-hover-background);
+	color: var(--ltp-skip-hover-text);
+	border: var(--ltp-skip-hover-border);
 }

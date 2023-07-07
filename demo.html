@@ -9,10 +9,10 @@
 </head>
 <body>
 <h1>demo</h1>
-	<video id="player" data-parser-name="player" controls>
-		<source label="360p" src="https://tube.kuylar.dev/proxy/media/aqz-KE-bpKQ/18">
-		<source label="720p" src="https://tube.kuylar.dev/proxy/media/aqz-KE-bpKQ/22">
-	</video>
+<video id="player" data-parser-name="player" controls>
+	<source label="360p" src="https://tube.kuylar.dev/proxy/media/aqz-KE-bpKQ/18">
+	<source label="720p" src="https://tube.kuylar.dev/proxy/media/aqz-KE-bpKQ/22">
+</video>
 <script>
 	const player = new Player("video", {
 		author: {
@@ -31,7 +31,37 @@
 			settings: '<svg><use href="feather-sprite.svg#settings"/></svg>',
 			fullscreen: '<svg><use href="feather-sprite.svg#maximize"/></svg>',
 			minimize: '<svg><use href="feather-sprite.svg#minimize"/></svg>'
-		}
+		},
+		chapters: [{
+			from: 0,
+			to: 10,
+			name: "Intro"
+		}, {
+			from: 10,
+			to: 40,
+			name: "The Beginning"
+		}, {
+			from: 40,
+			to: 60,
+			name: "The Middle"
+		}, {
+			from: 60,
+			to: 100,
+			name: "The End"
+		}],
+		segments: [
+			{
+				from: 5,
+				to: 15,
+				color: "#ff0",
+				onEnter: function (player) {
+					player.showSkipButton("Skip Sponsor", .15 * player.player.duration);
+				},
+				onExit: function (player) {
+					player.hideSkipButton();
+				}
+			}
+		]
 	});
 </script>
 </body>

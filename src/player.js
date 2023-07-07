@@ -27,7 +27,8 @@ class Player {
 			settingsButtonHtml: info.buttons.settings,
 			fullscreenButtonHtml: info.buttons.fullscreen,
 			minimizeButtonHtml: info.buttons.minimize,
-			chapters: info.chapters
+			chapters: info.chapters,
+			segments: info.segments
 		});
 
 		this.player.parentElement.insertBefore(this.root, this.player);
@@ -113,6 +114,7 @@ class Player {
 				played: playedBar
 			})
 		}
+		this.buildSegments(model.segments, progressBars);
 
 		container.appendChild(element4);
 
@@ -251,6 +253,10 @@ class Player {
 		menu.appendChild(menuitemAudioTracks);
 		container.appendChild(menu);
 
+		const buttonSkip = document.createElement("DIV");
+		buttonSkip.classList.add("ltp-skip");
+		container.appendChild(buttonSkip);
+
 		menuitemQuality.style.display = "none";
 		menuitemSubtitles.style.display = "none";
 		menuitemAudioTracks.style.display = "none";
@@ -269,7 +275,8 @@ class Player {
 				mute: buttonMute,
 				settings: buttonSettings,
 				fullscreen: buttonFullscreen,
-				minimize: buttonMinimize
+				minimize: buttonMinimize,
+				skip: buttonSkip
 			},
 			menus: {
 				menu: menu,
@@ -372,6 +379,7 @@ class Player {
 			else if (Date.now() < this.controlsHideTime && this.root.classList.contains("controls-hidden"))
 				this.root.classList.remove("controls-hidden");
 			this.resizeProgressBar("played", (this.player.currentTime / this.player.duration) * 100)
+			this.checkSegments();
 		}
 
 		this.player.onvolumechange = () => {
@@ -515,7 +523,7 @@ class Player {
 	}
 
 	remapNumber(value, in_min, in_max, out_min, out_max) {
-		return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+		return out_min + (out_max - out_min) * (value - in_min) / (in_max - in_min);
 	}
 
 	updateSelects() {
@@ -722,5 +730,56 @@ class Player {
 					this.elements.buttons.fullscreen.click();
 				break;
 		}
+	}
+
+	inRange(time, segment) {
+		return time > segment.from && time < segment.to;
+	}
+
+	buildSegments(segments, progressBars) {
+
+		function createSegment(from, width, color) {
+			const segment = document.createElement("DIV");
+			segment.classList.add("ltp-progress__segment");
+			segment.style.left = from + "%";
+			segment.style.backgroundColor = color;
+			segment.style.width = width + "%"
+			return segment;
+		}
+
+		let progressBar = progressBars[0];
+		for (const segment of segments) {
+			let segmentElement = createSegment(segment.from, segment.to - segment.from, segment.color);
+			progressBar.background.appendChild(segmentElement);
+		}
+	}
+
+	checkSegments() {
+		if (this.lastPosition === undefined) this.lastPosition = 0;
+		if (this.checkingSegments) return; // sometimes gets called twice or something?
+		this.checkingSegments = true;
+		const position = (this.player.currentTime / this.player.duration) * 100;
+		for (const segment of this.info.segments) {
+			if (!this.inRange(this.lastPosition, segment) && this.inRange(position, segment))
+				segment.onEnter(this);
+
+			if (this.inRange(this.lastPosition, segment) && !this.inRange(position, segment))
+				segment.onExit(this);
+		}
+
+		this.lastPosition = position;
+		this.checkingSegments = false;
+	}
+
+	showSkipButton(text, skipTo) {
+		this.elements.buttons.skip.style.display = "block";
+		this.elements.buttons.skip.innerText = text;
+		this.elements.buttons.skip.onclick = () => {
+			this.player.currentTime = skipTo;
+		}
+	}
+
+	hideSkipButton() {
+		this.elements.buttons.skip.style.display = "none";
 	}
 }
