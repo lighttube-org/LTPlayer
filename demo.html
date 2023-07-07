@@ -10,12 +10,8 @@
 <body>
 <h1>demo</h1>
 	<video id="player" data-parser-name="player" controls>
-		<source label="360p" src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_30MB.mp4">
-		<source label="720p" src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_30MB.mp4">
-		<track default
-			   kind="captions"
-			   srclang="en"
-			   src="/media/examples/friday.vtt">
+		<source label="360p" src="https://tube.kuylar.dev/proxy/media/aqz-KE-bpKQ/18">
+		<source label="720p" src="https://tube.kuylar.dev/proxy/media/aqz-KE-bpKQ/22">
 	</video>
 <script>
 	const player = new Player("video", {
@@ -38,20 +34,5 @@
 		}
 	});
 </script>
-<!--script>
-	if (Hls.isSupported()) {
-		const video = document.getElementById('player');
-		const hls = new Hls();
-		hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-			console.log('[HLS.JS] Media attached');
-		});
-		hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-			console.log(`[HLS.JS] Manifest parsed with ${data.levels.length} quality levels`);
-		});
-		hls.loadSource('https://tube.kuylar.dev/proxy/media/zLDlWNDmR8k.m3u8?useProxy=false');
-		// bind them together
-		hls.attachMedia(video);
-	}
-</script-->
 </body>
 </html>
