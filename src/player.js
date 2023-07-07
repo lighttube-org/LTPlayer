@@ -6,7 +6,7 @@ class Player {
 		this.playerType = "html5";
 		this.controlsHideTime = Number.MAX_SAFE_INTEGER
 		if (!info) throw new Error("info must be provided while constructing a new Player instance!");
-		if (!info.chapters || info.chapters.length == 0) {
+		if (!info.chapters || info.chapters.length === 0) {
 			info.chapters = [{
 				from: 0,
 				to: 100,
@@ -14,7 +14,7 @@ class Player {
 			}]
 		}
 
-		if (info.storyboard && info.storyboard.type == "yt_l1") {
+		if (info.storyboard && info.storyboard.type === "yt_l1") {
 			this.storyboardImage = new Image();
 			this.storyboardImage.src = info.storyboard.src;
 		}
@@ -409,11 +409,11 @@ class Player {
 			this.updateStoryboard(this.percentageFromMouseOverEvent(event, this.elements.progressBarSections[0].background.parentElement))
 		}
 
-		this.elements.progressBarSections[0].background.parentElement.onmouseenter = event => {
+		this.elements.progressBarSections[0].background.parentElement.onmouseenter = () => {
 			this.updateStoryboard(true);
 		}
 
-		this.elements.progressBarSections[0].background.parentElement.onmouseleave = event => {
+		this.elements.progressBarSections[0].background.parentElement.onmouseleave = () => {
 			this.updateStoryboard(false);
 		}
 
@@ -507,7 +507,7 @@ class Player {
 		return hours > 0 ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`.replaceAll("NaN", "--");
 	}
 
-	resizeProgressBar(barName, percentage, log = false) {
+	resizeProgressBar(barName, percentage) {
 		let totalPercSoFar = 0;
 		let reachedEnd = false;
 		for (const section of this.elements.progressBarSections) {
@@ -601,7 +601,7 @@ class Player {
 				if (this.hlsjs.audioTracks.length > 1) {
 					const atElements = [];
 					for (const audioTrack of this.hlsjs.audioTracks) {
-						atElements.push(this.createMenuOption(audioTrack.name, audioTrack.id, this.hlsjs.audioTrack == audioTrack.id))
+						atElements.push(this.createMenuOption(audioTrack.name, audioTrack.id, this.hlsjs.audioTrack === audioTrack.id))
 					}
 
 					while (this.elements.menus.audioTracks.firstElementChild)
@@ -694,7 +694,7 @@ class Player {
 				this.player.currentTime += 5;
 				break;
 			case "0":
-				this.player.currentTime = this.player.duration * 0.0;
+				this.player.currentTime = 0;
 				break;
 			case "1":
 				this.player.currentTime = this.player.duration * 0.1;
