@@ -32,23 +32,27 @@
 			fullscreen: '<svg><use href="feather-sprite.svg#maximize"/></svg>',
 			minimize: '<svg><use href="feather-sprite.svg#minimize"/></svg>'
 		},
-		chapters: [{
-			from: 0,
-			to: 10,
-			name: "Intro"
-		}, {
-			from: 10,
-			to: 40,
-			name: "The Beginning"
-		}, {
-			from: 40,
-			to: 60,
-			name: "The Middle"
-		}, {
-			from: 60,
-			to: 100,
-			name: "The End"
-		}],
+		chapters: [
+			{
+				from: 0,
+				to: 10,
+				name: "Intro"
+			},
+			{
+				from: 10,
+				to: 40,
+				name: "The Beginning"
+			},
+			{
+				from: 40,
+				to: 60,
+				name: "The Middle"
+			},
+			{
+				from: 60,
+				to: 100,
+				name: "The End"
+			}],
 		segments: [
 			{
 				from: 5,
@@ -61,7 +65,91 @@
 					player.hideSkipButton();
 				}
 			}
-		]
+		],
+		endscreen: {
+			"items": [
+				{
+					"target": "/demo.html",
+					"title": "LTPlayer Demo",
+					"image": [
+						{
+							"width": 855,
+							"height": 480,
+							"url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Big_Buck_Bunny_-_forest.jpg"
+						}
+					],
+					"metadata": "video by Blender",
+					"style": "VIDEO",
+					"startMs": 1949266,
+					"endMs": 1959530,
+					"aspectRatio": 1.7777778,
+					"left": 0.72982456,
+					"top": 0.13084112,
+					"width": 0.322807
+				},
+				{
+					"target": "/demo.html",
+					"title": "LTPlayer Demo",
+					"image": [
+						{
+							"width": 855,
+							"height": 480,
+							"url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Big_Buck_Bunny_-_forest.jpg"
+						}
+					],
+					"metadata": "video by Blender",
+					"style": "PLAYLIST", // considered VIDEO
+					"startMs": 1949266,
+					"endMs": 1959530,
+					"aspectRatio": 1.7777778,
+					"left": 0.022982456,
+					"top": 0.13084112,
+					"width": 0.322807
+				},
+				{
+					"target": "https://github.com/kuylar",
+					"title": "kuylar",
+					"image": [
+						{
+							"width": 855,
+							"height": 480,
+							"url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Big_Buck_Bunny_-_forest.jpg"
+						}
+					],
+					"metadata": "Follow on GitHub perhaps? I don't know I have to come up with dummy text :( Anyway at least using this I can test overflow",
+					"style": "CHANNEL",
+					"startMs": 1949266,
+					"endMs": 1959530,
+					"aspectRatio": 1,
+					"left": 0.77719299,
+					"top": 0.57320875,
+					"width": 0.15438597
+				},
+				{
+					"target": "https://github.com/kuylar/LTPlayer",
+					"title": "GitHub",
+					"image": [
+						{
+							"width": 560,
+							"height": 560,
+							"url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+						}
+					],
+					"metadata": "github.com",
+					"style": "WEBSITE",
+					"startMs": 1949266,
+					"endMs": 1959530,
+					"aspectRatio": 1,
+					"left": 0.17719299,
+					"top": 0.57320875,
+					"width": 0.15438597
+				}
+			],
+			"startMs": 1949266,
+			onClickHandler: item => {
+				alert(item.style + " - " + item.target);
+			}
+		}
 	});
 </script>
 </body>

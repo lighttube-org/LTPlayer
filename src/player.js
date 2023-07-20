@@ -28,7 +28,8 @@ class Player {
 			fullscreenButtonHtml: info.buttons.fullscreen,
 			minimizeButtonHtml: info.buttons.minimize,
 			chapters: info.chapters,
-			segments: info.segments
+			segments: info.segments,
+			endscreen: info.endscreen
 		});
 
 		this.player.parentElement.insertBefore(this.root, this.player);
@@ -55,6 +56,8 @@ class Player {
 		this.assignEvents();
 		this.updateButtons();
 		this.updateSelects();
+		if (info.endscreen != null)
+			this.buildEndscreen();
 	}
 
 	buildPlayerElement(model) {
@@ -66,6 +69,11 @@ class Player {
 		const element1 = document.createElement("DIV");
 		element1.setAttribute("class", "ltp-gradient-top");
 		container.appendChild(element1);
+
+		const endscreenContainer = document.createElement("DIV");
+		endscreenContainer.setAttribute("class", "ltp-endscreen");
+		endscreenContainer.style.display = "none";
+		container.appendChild(endscreenContainer);
 
 		const element2 = document.createElement("DIV");
 		element2.setAttribute("class", "ltp-title");
@@ -264,6 +272,7 @@ class Player {
 
 		this.elements = {
 			root: container,
+			endscreenContainer,
 			authorIcon,
 			videoTitle,
 			timestamp,
@@ -781,5 +790,55 @@ class Player {
 
 	hideSkipButton() {
 		this.elements.buttons.skip.style.display = "none";
+	}
+
+	buildEndscreenElement(item, onClickHandler) {
+		const container = document.createElement("DIV");
+		container.classList.add("ltp-endscreen-item");
+		container.classList.add("ltp-endscreen-item__" + item.style);
+
+		const background = document.createElement("IMG");
+		const textContainer = document.createElement("DIV");
+		const title = document.createElement("DIV");
+		const subtitle = document.createElement("DIV");
+
+		background.classList.add("ltp-endscreen__bg")
+		textContainer.classList.add("ltp-endscreen-item__text")
+		title.classList.add("title")
+		subtitle.classList.add("subtitle")
+
+		background.src = item.image[0].url //todo: use the best image
+		title.innerText = item.title;
+		subtitle.innerText = item.metadata;
+
+		container.style.left = (item.left * 100) + "%";
+		container.style.top = (item.top * 100) + "%";
+		container.style.width = (item.width * 100) + "%";
+		container.style.aspectRatio = item.aspectRatio.toString();
+
+		container.onclick = () => {
+			onClickHandler(item);
+		};
+
+		textContainer.appendChild(title);
+		textContainer.appendChild(subtitle);
+		container.appendChild(background);
+		container.appendChild(textContainer);
+
+		this.elements.endscreenContainer.appendChild(container);
+	}
+
+	buildEndscreen() {
+		this.info.endscreen.items.forEach(endScreenItem => {
+			this.buildEndscreenElement(endScreenItem, this.info.endscreen.onClickHandler);
+		});
+
+		this.player.addEventListener("timeupdate", () => {
+			if (this.player.currentTime >= this.info.endscreen.startMs && this.elements.endscreenContainer.style.display === "none") {
+				this.elements.endscreenContainer.style.display = "block";
+			} else if (this.player.currentTime <= this.info.endscreen.startMs && this.elements.endscreenContainer.style.display == "block") {
+				this.elements.endscreenContainer.style.display = "none";
+			}
+		})
 	}
 }
