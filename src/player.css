@@ -29,6 +29,10 @@
 	--ltp-skip-hover-background: #0009;
 	--ltp-skip-hover-text: #fff;
 	--ltp-skip-hover-border: 1px solid #fff;
+
+	--ltp-endscreen-item-title: #fff;
+	--ltp-endscreen-item-subtitle: #ddd;
+	--ltp-endscreen-item-background: #ccc;
 }
 
 .ltp-root, .ltp-root * {
@@ -354,7 +358,7 @@
 	box-shadow: black 0 0 5px;
 	border: 1px solid white;
 	box-sizing: border-box;
-	background-color: #ccc;
+	background-color: var(--ltp-endscreen-item-background);
 	cursor: pointer;
 	overflow: hidden;
 	pointer-events: all;
@@ -381,12 +385,12 @@
 }
 
 .ltp-endscreen-item__text > div {
-	color: #fff;
+	color: var(--ltp-endscreen-item-title);
 	text-shadow: -1px -1px 0 #0003, 0 -1px 0 #0003, 1px -1px 0 #0003, 1px 0 0 #0003, 1px 1px 0 #0003, 0 1px 0 #0003, -1px 1px 0 #0003, -1px 0 0 #0003;
 }
 
 .ltp-endscreen-item__text > div.subtitle {
-	color: #ddd;
+	color: var(--ltp-endscreen-item-subtitle);
 }
 
 .ltp-endscreen-item__CHANNEL {
