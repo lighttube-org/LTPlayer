@@ -78,5 +78,5 @@ You can use CSS variables to style parts of the player.
 [x] Hotkeys  
 [x] Preview thumbnails (storyboards)  
 [ ] High quality preview thumbnails (YouTube L2)  
-[ ] Endcards  
+[x] Endcards  
 [x] Playback Segments  
