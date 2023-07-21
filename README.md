@@ -8,7 +8,7 @@ A video player made for [LightTube](https://github.com/kuylar/lighttube).
 
 ## Usage
 
-just import `src/player.js` & `src/player.css` into your HTML file, and then initialize the player with the following
+just import `dist/player.min.js` & `dist/player.min.css` into your HTML file, and then initialize the player with the following
 snippet:
 
 ```html

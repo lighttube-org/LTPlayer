@@ -5,7 +5,7 @@ class Player {
 		this.info = info;
 		this.playerType = "html5";
 		this.controlsHideTime = Number.MAX_SAFE_INTEGER
-		if (!info) throw new Error("info must be provided while constructing a new Player instance!");
+		if (!info) throw new Error("info must be provided while constructing a new PlayerMin instance!");
 		if (!info.chapters || info.chapters.length === 0) {
 			info.chapters = [{
 				from: 0,
