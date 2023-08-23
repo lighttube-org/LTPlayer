@@ -60,6 +60,7 @@
 	right: 0;
 	color: white;
 	height: var(--ltp-top-gradient-height);
+	pointer-events: none;
 	background: var(--ltp-top-gradient);
 }
 
@@ -70,6 +71,7 @@
 	right: 12px;
 	color: white;
 	height: var(--ltp-title-height);
+	pointer-events: none;
 
 	display: flex;
 	align-items: center;
@@ -89,6 +91,7 @@
 .ltp-title__icon {
 	width: 40px;
 	height: 40px;
+	pointer-events: all;
 	flex-shrink: 0;
 	border-radius: 24px;
 	margin: 10px 0;
@@ -99,6 +102,7 @@
 	bottom: 0;
 	left: 0;
 	right: 0;
+	pointer-events: none;
 	color: white;
 	height: var(--ltp-bottom-gradient-height);
 	background: var(--ltp-bottom-gradient);
@@ -169,12 +173,13 @@
 	right: 12px;
 	color: white;
 	height: var(--ltp-controls-height);
-
+	pointer-events: none;
 	display: flex;
 }
 
 .ltp-controls-divider {
 	flex-grow: 1;
+	pointer-events: none;
 }
 
 .ltp-controls-button, .ltp-controls-volume-icon {
@@ -183,7 +188,7 @@
 	color: #eee;
 	user-select: none;
 	cursor: pointer;
-
+	pointer-events: all;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -392,6 +397,6 @@
 	border-radius: 50%;
 }
 
-.ltp-endscreen-item__CHANNEL > .ltp-endscreen-item__text > div{
+.ltp-endscreen-item__CHANNEL > .ltp-endscreen-item__text > div {
 	display: none;
 }
