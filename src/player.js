@@ -747,6 +747,16 @@ class Player {
 				else
 					this.elements.buttons.fullscreen.click();
 				return true;
+			case "arrowup":
+				try {
+					this.player.volume += 0.1;
+				} catch{}
+				return true;
+			case "arrowdown":
+				try {
+					this.player.volume -= 0.1;
+				} catch{}
+				return true;
 		}
 		return false;
 	}
