@@ -71,7 +71,6 @@
 	right: 12px;
 	color: white;
 	height: var(--ltp-title-height);
-	pointer-events: none;
 
 	display: flex;
 	align-items: center;
@@ -173,13 +172,11 @@
 	right: 12px;
 	color: white;
 	height: var(--ltp-controls-height);
-	pointer-events: none;
 	display: flex;
 }
 
 .ltp-controls-divider {
 	flex-grow: 1;
-	pointer-events: none;
 }
 
 .ltp-controls-button, .ltp-controls-volume-icon {

@@ -351,10 +351,8 @@ class Player {
 						this.updateButtons();
 					});
 		}
-		this.player.onmousemove = () => {
-			this.root.classList.remove("controls-hidden");
-			this.controlsHideTime = Date.now() + 5000;
-		}
+
+		this.addMouseMoveEvents(this.elements.root)
 
 		this.elements.buttons.mute.onclick = () => {
 			this.player.muted = !this.player.muted;
@@ -483,6 +481,16 @@ class Player {
 				this.resizeProgressBar("buffered", (this.player.buffered.end(this.player.buffered.length - 1) / this.player.duration) * 100, true)
 			this.elements.timestamp.innerText = `${this.timestampFromMs(this.player.currentTime)} / ${this.timestampFromMs(this.player.duration)}`;
 		}, 100);
+	}
+
+	addMouseMoveEvents(el) {
+		for (let e of Array.from(el.children))
+			this.addMouseMoveEvents(e);
+
+		el.addEventListener("mousemove", () => {
+			this.root.classList.remove("controls-hidden");
+			this.controlsHideTime = Date.now() + 5000;
+		});
 	}
 
 	updateButtons() {
@@ -836,7 +844,7 @@ class Player {
 		this.player.addEventListener("timeupdate", () => {
 			if (this.player.currentTime >= this.info.endscreen.startMs && this.elements.endscreenContainer.style.display === "none") {
 				this.elements.endscreenContainer.style.display = "block";
-			} else if (this.player.currentTime <= this.info.endscreen.startMs && this.elements.endscreenContainer.style.display == "block") {
+			} else if (this.player.currentTime <= this.info.endscreen.startMs && this.elements.endscreenContainer.style.display === "block") {
 				this.elements.endscreenContainer.style.display = "none";
 			}
 		})
