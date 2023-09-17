@@ -473,7 +473,8 @@ class Player {
 		window.onkeydown = event => {
 			if (!this.elements.root.contains(event.target)) return;
 			if (event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) return;
-			this.handleHotkey(event.key)
+			if (this.handleHotkey(event.key))
+				event.preventDefault();
 		}
 
 		setInterval(() => {
@@ -698,55 +699,56 @@ class Player {
 					this.player.play();
 				else
 					this.player.pause();
-				break;
+				return true;
 			case "m":
 				this.elements.buttons.mute.click();
-				break;
+				return true;
 			case "j":
 			case "arrowleft":
 				this.player.currentTime -= 5;
-				break;
+				return true;
 			case "l":
 			case "arrowright":
 				this.player.currentTime += 5;
-				break;
+				return true;
 			case "0":
 				this.player.currentTime = 0;
-				break;
+				return true;
 			case "1":
 				this.player.currentTime = this.player.duration * 0.1;
-				break;
+				return true;
 			case "2":
 				this.player.currentTime = this.player.duration * 0.2;
-				break;
+				return true;
 			case "3":
 				this.player.currentTime = this.player.duration * 0.3;
-				break;
+				return true;
 			case "4":
 				this.player.currentTime = this.player.duration * 0.4;
-				break;
+				return true;
 			case "5":
 				this.player.currentTime = this.player.duration * 0.5;
-				break;
+				return true;
 			case "6":
 				this.player.currentTime = this.player.duration * 0.6;
-				break;
+				return true;
 			case "7":
 				this.player.currentTime = this.player.duration * 0.7;
-				break;
+				return true;
 			case "8":
 				this.player.currentTime = this.player.duration * 0.8;
-				break;
+				return true;
 			case "9":
 				this.player.currentTime = this.player.duration * 0.9;
-				break;
+				return true;
 			case "f":
 				if (document.fullscreenElement != null)
 					this.elements.buttons.minimize.click();
 				else
 					this.elements.buttons.fullscreen.click();
-				break;
+				return true;
 		}
+		return false;
 	}
 
 	inRange(time, segment) {
