@@ -433,6 +433,7 @@ class Player {
 
 		this.elements.menus.speed.onchange = () => {
 			this.player.playbackRate = parseFloat(this.elements.menus.speed.value);
+			this.elements.menus.menu.style.display = "none";
 		}
 		this.elements.menus.quality.onchange = () => {
 			switch (this.playerType) {
@@ -449,6 +450,7 @@ class Player {
 					console.error(`Unknown player type ${this.playerType}`)
 					break;
 			}
+			this.elements.menus.menu.style.display = "none";
 		}
 		this.elements.menus.audioTracks.onchange = () => {
 			switch (this.playerType) {
@@ -459,6 +461,7 @@ class Player {
 					console.error(`Unknown player type ${this.playerType}`)
 					break;
 			}
+			this.elements.menus.menu.style.display = "none";
 		}
 		this.elements.menus.subtitles.onchange = () => {
 			for (let i = 0; i < this.player.textTracks.length; i++) {
@@ -468,6 +471,7 @@ class Player {
 			if (this.elements.menus.subtitles.value === "null") return;
 			const track = Array.from(this.player.textTracks).filter(x => x.label === this.elements.menus.subtitles.value)[0];
 			track.mode = "showing";
+			this.elements.menus.menu.style.display = "none";
 		}
 
 		window.onkeydown = event => {
@@ -750,12 +754,14 @@ class Player {
 			case "arrowup":
 				try {
 					this.player.volume += 0.1;
-				} catch{}
+				} catch {
+				}
 				return true;
 			case "arrowdown":
 				try {
 					this.player.volume -= 0.1;
-				} catch{}
+				} catch {
+				}
 				return true;
 		}
 		return false;
