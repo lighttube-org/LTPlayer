@@ -522,10 +522,10 @@ class Player {
 
 	timestampFromMs(ms) {
 		let seconds = ms;
-		const hours = Math.round(seconds / 3600);
+		const hours = Math.floor(seconds / 3600);
 		seconds = seconds % 3600;
-		const minutes = Math.round(seconds / 60).toString().padStart(2, "0");
-		seconds = Math.round(seconds % 60).toString().padStart(2, "0");
+		const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
+		seconds = Math.floor(seconds % 60).toString().padStart(2, "0");
 		return hours > 0 ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`.replaceAll("NaN", "--");
 	}
 
