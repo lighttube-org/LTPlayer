@@ -280,6 +280,10 @@
 	width: 100px;
 }
 
+.ltp-root.controls-hidden {
+	cursor: none;
+}
+
 .ltp-root.controls-hidden .ltp-controls,
 .ltp-root.controls-hidden .ltp-progress-container,
 .ltp-root.controls-hidden .ltp-title,
