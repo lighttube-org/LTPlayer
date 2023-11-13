@@ -66,11 +66,22 @@
 			}],
 		segments: [
 			{
-				from: 5,
-				to: 15,
-				color: "#ff0",
+				from: 0,
+				to: 0.6,
+				color: "#0ff",
 				onEnter: function (player) {
-					player.showSkipButton("Skip Sponsor", .15 * player.player.duration);
+					player.showSkipButton("Skip intro", 4);
+				},
+				onExit: function (player) {
+					player.hideSkipButton();
+				}
+			},
+			{
+				from: 78,
+				to: 97.5,
+				color: "#0202ed",
+				onEnter: function (player) {
+					player.showSkipButton("Skip credits", 619);
 				},
 				onExit: function (player) {
 					player.hideSkipButton();
