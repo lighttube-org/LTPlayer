@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>LTPlayer Demo</title>
+	<script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
+	<link rel="stylesheet" href="src/player.css">
+	<script src="src/player.js"></script>
+	<style>
+		.ltp-controls-button > svg,
+		.ltp-controls-volume-icon > svg
+		{
+			stroke: currentColor;
+			stroke-width: 2;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			fill: none;
+		}
+	</style>
+</head>
+<body>
+<h1>demo</h1>
+<video id="player" data-parser-name="player"></video>
+<script>
+	const player = new Player("video", {
+		author: {
+			icon: "https://yt3.ggpht.com/_1moiyrsDiDqGazeNWWzWy6TMt5ji1bhW1yiEHfIwDUqA77Bvl-WZ65TbvDN47x-R02MpSqvmcQ=s176-c-k-c0x00ffffff-no-rj",
+			title: "Lofi Girl",
+			href: "https://youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"
+		},
+		hlsManifest: "https://tube.kuylar.dev/proxy/media/jfKfPfyJRdk.m3u8?useProxy=false",
+		title: "lofi hip hop radio 📚 - beats to relax/study to",
+		buttons: {
+			play: '<svg><use href="feather-sprite.svg#play"/></svg>',
+			pause: '<svg><use href="feather-sprite.svg#pause"/></svg>',
+			volumeMute: '<svg><use href="feather-sprite.svg#volume-x"/></svg>',
+			volumeLow: '<svg><use href="feather-sprite.svg#volume"/></svg>',
+			volumeMedium: '<svg><use href="feather-sprite.svg#volume-1"/></svg>',
+			volumeHigh: '<svg><use href="feather-sprite.svg#volume-2"/></svg>',
+			settings: '<svg><use href="feather-sprite.svg#settings"/></svg>',
+			fullscreen: '<svg><use href="feather-sprite.svg#maximize"/></svg>',
+			minimize: '<svg><use href="feather-sprite.svg#minimize"/></svg>'
+		},
+		loading: "<img style='width:15%;height:15%;' src='loading.svg'>"
+	}, "hls.js");
+</script>
+</body>
+</html>
