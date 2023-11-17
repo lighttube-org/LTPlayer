@@ -29,7 +29,8 @@ class Player {
 			minimizeButtonHtml: info.buttons.minimize,
 			chapters: info.chapters,
 			segments: info.segments,
-			endscreen: info.endscreen
+			endscreen: info.endscreen,
+			loading: info.loading
 		});
 
 		this.player.parentElement.insertBefore(this.root, this.player);
@@ -95,6 +96,11 @@ class Player {
 		element3.setAttribute("class", "ltp-gradient-bottom");
 		container.appendChild(element3);
 
+		const loading = document.createElement("DIV");
+		loading.setAttribute("class", "ltp-loading");
+		loading.innerHTML = model.loading;
+		container.appendChild(loading);
+
 		const element4 = document.createElement("DIV");
 		element4.setAttribute("class", "ltp-progress-container");
 
@@ -122,7 +128,7 @@ class Player {
 				played: playedBar
 			})
 		}
-		this.buildSegments(model.segments, progressBars);
+		this.buildSegments(model.segments || [], progressBars);
 
 		container.appendChild(element4);
 
@@ -299,7 +305,8 @@ class Player {
 				image: previewContainerImg,
 				context: previewContainerImg.getContext("2d"),
 				text: previewContainerText
-			}
+			},
+			loading
 		}
 
 		return container;
@@ -485,6 +492,7 @@ class Player {
 			if (this.player.buffered.length > 0)
 				this.resizeProgressBar("buffered", (this.player.buffered.end(this.player.buffered.length - 1) / this.player.duration) * 100, true)
 			this.elements.timestamp.innerText = `${this.timestampFromMs(this.player.currentTime)} / ${this.timestampFromMs(this.player.duration)}`;
+			this.updateLoading();
 		}, 100);
 	}
 
@@ -866,5 +874,19 @@ class Player {
 				this.elements.endscreenContainer.style.display = "none";
 			}
 		})
+	}
+
+	updateLoading() {
+		const buffered = this.player.buffered;
+		let buffering = true;
+
+		if (buffered.length != 0) {
+			for (let i = 0; i < buffered.length; i++) {
+				if (buffered.start(i) <= this.player.currentTime && this.player.currentTime <= buffered.end(i)) {
+					buffering = false;
+				}
+			}
+		}
+		this.elements.loading.style.display = buffering ? "flex" : "none";
 	}
 }

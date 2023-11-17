@@ -107,6 +107,17 @@
 	background: var(--ltp-bottom-gradient);
 }
 
+.ltp-loading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+
 .ltp-progress-container {
 	position: absolute;
 	bottom: 40px;
