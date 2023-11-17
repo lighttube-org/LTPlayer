@@ -882,7 +882,7 @@ class Player {
 
 		if (buffered.length != 0) {
 			for (let i = 0; i < buffered.length; i++) {
-				if (buffered.start(i) <= this.player.currentTime && this.player.currentTime <= buffered.end(i)) {
+				if (buffered.start(i) <= this.player.currentTime && this.player.currentTime <= (buffered.end(i) - 0.5)) {
 					buffering = false;
 				}
 			}
