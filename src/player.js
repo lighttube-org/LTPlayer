@@ -140,11 +140,6 @@ class Player {
 		buttonPlay.innerHTML = model.playButtonHtml;
 		element5.appendChild(buttonPlay);
 
-		const buttonPause = document.createElement("DIV");
-		buttonPause.setAttribute("class", "ltp-controls-button");
-		buttonPause.innerHTML = model.pauseButtonHtml;
-		element5.appendChild(buttonPause);
-
 		const buttonMute = document.createElement("DIV");
 		buttonMute.setAttribute("class", "ltp-controls-volume-icon");
 		let html;
@@ -190,11 +185,6 @@ class Player {
 		buttonFullscreen.setAttribute("class", "ltp-controls-button");
 		buttonFullscreen.innerHTML = model.fullscreenButtonHtml;
 		element5.appendChild(buttonFullscreen);
-
-		const buttonMinimize = document.createElement("DIV");
-		buttonMinimize.setAttribute("class", "ltp-controls-button");
-		buttonMinimize.innerHTML = model.minimizeButtonHtml;
-		element5.appendChild(buttonMinimize);
 		container.appendChild(element5);
 
 		const previewContainer = document.createElement("DIV");
@@ -286,11 +276,9 @@ class Player {
 			progressBarSections: progressBars,
 			buttons: {
 				play: buttonPlay,
-				pause: buttonPause,
 				mute: buttonMute,
 				settings: buttonSettings,
 				fullscreen: buttonFullscreen,
-				minimize: buttonMinimize,
 				skip: buttonSkip
 			},
 			menus: {
@@ -323,10 +311,8 @@ class Player {
 
 	assignEvents() {
 		this.elements.buttons.play.onclick = () => {
-			this.player.play();
-		}
-		this.elements.buttons.pause.onclick = () => {
-			this.player.pause();
+			if (this.player.paused) this.player.play()
+			else this.player.pause()
 		}
 		this.player.onpause = () => {
 			this.updateButtons()
@@ -367,24 +353,14 @@ class Player {
 		}
 
 		this.elements.buttons.fullscreen.onclick = () => {
-			this.root.requestFullscreen({
+			let promise = window.fullScreen ? document.exitFullscreen() : this.root.requestFullscreen({
 				navigationUI: "hide"
 			})
-				.then(() => {
-					this.updateButtons();
-				})
-				.catch(() => {
-					this.updateButtons();
-				});
-		}
-		this.elements.buttons.minimize.onclick = () => {
-			document.exitFullscreen()
-				.then(() => {
-					this.updateButtons();
-				})
-				.catch(() => {
-					this.updateButtons();
-				});
+			promise.then(() => {
+				this.updateButtons();
+			}).catch(() => {
+				this.updateButtons();
+			})
 		}
 
 		this.player.ontimeupdate = () => {
@@ -507,20 +483,8 @@ class Player {
 	}
 
 	updateButtons() {
-		if (this.player.paused) {
-			this.elements.buttons.pause.style.display = "none"
-			this.elements.buttons.play.style.display = "flex"
-		} else {
-			this.elements.buttons.play.style.display = "none"
-			this.elements.buttons.pause.style.display = "flex"
-		}
-		if (window.fullScreen) {
-			this.elements.buttons.fullscreen.style.display = "none"
-			this.elements.buttons.minimize.style.display = "flex"
-		} else {
-			this.elements.buttons.minimize.style.display = "none"
-			this.elements.buttons.fullscreen.style.display = "flex"
-		}
+		this.elements.buttons.play.innerHTML = this.player.paused ? this.info.buttons.play : this.info.buttons.pause
+		this.elements.buttons.fullscreen.innerHTML = window.fullScreen ? this.info.buttons.minimize : this.info.buttons.fullscreen
 	}
 
 	percentageFromMouseOverEvent(event, element) {
@@ -754,10 +718,7 @@ class Player {
 				this.player.currentTime = this.player.duration * 0.9;
 				return true;
 			case "f":
-				if (document.fullscreenElement != null)
-					this.elements.buttons.minimize.click();
-				else
-					this.elements.buttons.fullscreen.click();
+				this.elements.buttons.fullscreen.click();
 				return true;
 			case "arrowup":
 				try {
