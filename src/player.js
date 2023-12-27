@@ -880,13 +880,16 @@ class Player {
 		const buffered = this.player.buffered;
 		let buffering = true;
 
-		if (buffered.length != 0) {
+		if (buffered.length !== 0) {
 			for (let i = 0; i < buffered.length; i++) {
-				if (buffered.start(i) <= this.player.currentTime && this.player.currentTime <= (buffered.end(i) - 0.5)) {
+				if (buffered.start(i) <= this.player.currentTime && this.player.currentTime <= (buffered.end(i) - 0.001)) {
 					buffering = false;
 				}
 			}
 		}
+
+		if (this.player.currentTime >= (this.player.duration - 0.002)) buffering = false;
+
 		this.elements.loading.style.display = buffering ? "flex" : "none";
 	}
 }
