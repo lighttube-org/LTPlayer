@@ -116,6 +116,11 @@
 	display: none;
 	align-items: center;
 	justify-content: center;
+	pointer-events: none;
+}
+
+.ltp-loading * {
+	pointer-events: none;
 }
 
 .ltp-progress-container {
