@@ -54,6 +54,12 @@ class Player {
 			}
 		}
 
+		if (this.info.rememberVolume) {
+			let savedVolume = window.localStorage.getItem("ltplayer.volume")
+			if (savedVolume != null)
+				this.player.volume = Number(savedVolume)
+		}
+
 		this.assignEvents();
 		this.updateButtons();
 		this.updateSelects();
@@ -385,6 +391,13 @@ class Player {
 				html = this.info.buttons.volumeMedium;
 			}
 			this.elements.buttons.mute.innerHTML = html;
+			if (this.info.rememberVolume) {
+				try {
+					window.localStorage.setItem("ltplayer.volume", this.player.volume)
+				} catch (_) {
+					// no localstorage access? :(
+				}
+			}
 		}
 
 		this.elements.volumeBar.parentElement.parentElement.onclick = event => {
