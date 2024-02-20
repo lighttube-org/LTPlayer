@@ -41,11 +41,9 @@ class Player {
 				this.playerType = "hls.js";
 				this.hlsjs = new Hls();
 				this.hlsjs.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-					console.log(`[HLS.JS] Manifest parsed with ${data.levels.length} quality levels`);
 					this.updateSelects();
 				});
 				this.hlsjs.on(Hls.Events.LEVEL_SWITCHED, (event, {level}) => {
-					console.log(`[HLS.JS] Switched to the quality level ${this.hlsjs.levels[level].height}p (${level})`);
 					this.updateSelects();
 				});
 				this.hlsjs.loadSource(info.hlsManifest);
@@ -621,7 +619,6 @@ class Player {
 				// subtitles
 				// using HTML subtitles cus i couldnt get hls.js subtitles to work :33
 				const textTracks2 = Array.from(this.player.textTracks);
-				console.log(textTracks2)
 				if (textTracks2.length > 0) {
 					let foundSubtitles = false;
 					let subtitles = [];
