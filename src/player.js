@@ -538,7 +538,7 @@ class Player {
 			case "html5":
 				const elements = Array.from(this.player.children);
 				const videoTracks = elements.filter(x => x.tagName === "SOURCE");
-				const textTracks = Array.from(this.player.textTracks).filter(x => x.groupId === "vtt");
+				const textTracks = Array.from(this.player.textTracks);
 
 				if (videoTracks.length > 1) {
 					let foundQuality = false;
@@ -620,7 +620,7 @@ class Player {
 
 				// subtitles
 				// using HTML subtitles cus i couldnt get hls.js subtitles to work :33
-				const textTracks2 = Array.from(this.player.textTracks).filter(x => x.groupId === "vtt");
+				const textTracks2 = Array.from(this.player.textTracks);
 				console.log(textTracks2)
 				if (textTracks2.length > 0) {
 					let foundSubtitles = false;
