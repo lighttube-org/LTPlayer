@@ -654,7 +654,12 @@ class Player {
 				this.elements.storyboard.container.style.display = "none";
 		} else {
 			let seconds = progress * this.player.duration;
-			this.elements.storyboard.text.innerText = this.timestampFromMs(seconds);
+			if (this.playerType === "hls.js" &&
+				this.hlsjs.levels.map(x => x.details?.live || false).includes(true)) { // easily the worst way to check if were playing a live content
+				this.elements.storyboard.text.innerText = "-" + this.timestampFromMs(this.player.duration-seconds);
+			} else {
+				this.elements.storyboard.text.innerText = this.timestampFromMs(seconds);
+			}
 
 			if (progress < .5) {
 				this.elements.storyboard.container.style.left = `calc(${Math.max(0, progress * 100)}% - 87.5px)`;
