@@ -329,24 +329,7 @@ class Player {
 			else this.player.pause()
 		}
 		this.player.ondblclick = () => {
-			if (window.fullScreen)
-				document.exitFullscreen()
-					.then(() => {
-						this.updateButtons();
-					})
-					.catch(() => {
-						this.updateButtons();
-					});
-			else
-				this.root.requestFullscreen({
-					navigationUI: "hide"
-				})
-					.then(() => {
-						this.updateButtons();
-					})
-					.catch(() => {
-						this.updateButtons();
-					});
+			this.toggleFullscreen()
 		}
 
 		this.addMouseMoveEvents(this.elements.root)
