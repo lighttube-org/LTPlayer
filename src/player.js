@@ -27,6 +27,7 @@ class Player {
 			settingsButtonHtml: info.buttons.settings,
 			fullscreenButtonHtml: info.buttons.fullscreen,
 			minimizeButtonHtml: info.buttons.minimize,
+			skipToLiveHtml: info.buttons.skipToLiveHtml,
 			chapters: info.chapters,
 			segments: info.segments,
 			endscreen: info.endscreen,
@@ -176,6 +177,11 @@ class Player {
 		timestamp.innerHTML = "--:-- / --:--";
 		element5.appendChild(timestamp);
 
+		const skipToLive = document.createElement("DIV");
+		skipToLive.setAttribute("class", "ltp-controls-button");
+		skipToLive.innerHTML = model.skipToLiveHtml;
+		element5.appendChild(skipToLive);
+
 		const element6 = document.createElement("DIV");
 		element6.setAttribute("class", "ltp-controls-divider");
 		element5.appendChild(element6);
@@ -283,7 +289,8 @@ class Player {
 				mute: buttonMute,
 				settings: buttonSettings,
 				fullscreen: buttonFullscreen,
-				skip: buttonSkip
+				skip: buttonSkip,
+				skipToLive: skipToLive
 			},
 			menus: {
 				menu: menu,
@@ -337,6 +344,10 @@ class Player {
 		this.elements.buttons.mute.onclick = () => {
 			this.player.muted = !this.player.muted;
 			this.updateButtons();
+		}
+
+		this.elements.buttons.skipToLive.onclick = () => {
+			this.player.currentTime = this.player.duration;
 		}
 
 		this.elements.buttons.fullscreen.onclick = () => {
@@ -459,10 +470,13 @@ class Player {
 				let offset = this.player.currentTime - this.player.duration;
 				if (offset < -30) {
 					this.elements.timestamp.innerText = `-${this.timestampFromMs(-offset)}`;
+					this.elements.buttons.skipToLive.style.display = "flex";
 				} else {
 					this.elements.timestamp.innerText = `Live`;
+					this.elements.buttons.skipToLive.style.display = "none";
 				}
 			} else {
+				this.elements.buttons.skipToLive.style.display = "none";
 				this.elements.timestamp.innerText = `${this.timestampFromMs(this.player.currentTime)} / ${this.timestampFromMs(this.player.duration)}`;
 			}
 			this.updateLoading();
