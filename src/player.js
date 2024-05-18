@@ -357,14 +357,7 @@ class Player {
 		}
 
 		this.elements.buttons.fullscreen.onclick = () => {
-			let promise = window.fullScreen ? document.exitFullscreen() : this.root.requestFullscreen({
-				navigationUI: "hide"
-			})
-			promise.then(() => {
-				this.updateButtons();
-			}).catch(() => {
-				this.updateButtons();
-			})
+			this.toggleFullscreen()
 		}
 
 		this.player.ontimeupdate = () => {
@@ -728,7 +721,7 @@ class Player {
 				this.player.currentTime = this.player.duration * 0.9;
 				return true;
 			case "f":
-				this.elements.buttons.fullscreen.click();
+				this.toggleFullscreen();
 				return true;
 			case "arrowup":
 				try {
@@ -862,5 +855,31 @@ class Player {
 		if (this.player.currentTime >= (this.player.duration - 0.002)) buffering = false;
 
 		this.elements.loading.style.display = buffering ? "flex" : "none";
+	}
+
+	enterFullscreen() {
+		this.root.requestFullscreen({
+			navigationUI: "hide"
+		}).then(() => {
+			this.updateButtons()
+		}).catch(() => {
+			this.updateButtons()
+		});
+	}
+
+	exitFullscreen() {
+		document.exitFullscreen().then(() => {
+			this.updateButtons()
+		}).catch(() => {
+			this.updateButtons()
+		});
+	}
+
+	toggleFullscreen() {
+		if (document.fullscreenElement) {
+			this.exitFullscreen();
+		} else {
+			this.enterFullscreen();
+		}
 	}
 }
