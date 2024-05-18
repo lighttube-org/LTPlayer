@@ -471,7 +471,17 @@ class Player {
 		setInterval(() => {
 			if (this.player.buffered.length > 0)
 				this.resizeProgressBar("buffered", (this.player.buffered.end(this.player.buffered.length - 1) / this.player.duration) * 100, true)
-			this.elements.timestamp.innerText = `${this.timestampFromMs(this.player.currentTime)} / ${this.timestampFromMs(this.player.duration)}`;
+			if (this.playerType === "hls.js" &&
+				this.hlsjs.levels.map(x => x.details?.live || false).includes(true)) { // easily the worst way to check if were playing a live content
+				let offset = this.player.currentTime - this.player.duration;
+				if (offset < -30) {
+					this.elements.timestamp.innerText = `-${this.timestampFromMs(-offset)}`;
+				} else {
+					this.elements.timestamp.innerText = `Live`;
+				}
+			} else {
+				this.elements.timestamp.innerText = `${this.timestampFromMs(this.player.currentTime)} / ${this.timestampFromMs(this.player.duration)}`;
+			}
 			this.updateLoading();
 		}, 100);
 	}
