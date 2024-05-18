@@ -481,6 +481,27 @@ class Player {
 			}
 			this.updateLoading();
 		}, 100);
+
+
+		// required because iPhones do not support the fullscreenchange event
+		if ([
+				'iPad Simulator',
+				'iPhone Simulator',
+				'iPod Simulator',
+				'iPad',
+				'iPhone',
+				'iPod'
+			].includes(navigator.platform)
+			// iPad on iOS 13 detection
+			|| (navigator.userAgent.includes("Mac") && "ontouchend" in document)) {
+			setInterval(() => {
+				this.updateButtons()
+			}, 500);
+		} else {
+			document.addEventListener("fullscreenchange", event => {
+				this.updateButtons()
+			});
+		}
 	}
 
 	addMouseMoveEvents(el) {
