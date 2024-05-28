@@ -37,7 +37,7 @@ class Player {
 		this.player.parentElement.insertBefore(this.root, this.player);
 		this.root.insertBefore(this.player, this.root.firstElementChild);
 
-		if (info.hlsManifest) {
+		if (info.hlsManifest && typeof Hls != "undefined") {
 			if (Hls.isSupported()) {
 				this.playerType = "hls.js";
 				this.hlsjs = new Hls();
