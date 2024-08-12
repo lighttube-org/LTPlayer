@@ -27,6 +27,7 @@ class Player {
 			settingsButtonHtml: info.buttons.settings,
 			fullscreenButtonHtml: info.buttons.fullscreen,
 			minimizeButtonHtml: info.buttons.minimize,
+			skipToLiveHtml: info.buttons.skipToLiveHtml,
 			chapters: info.chapters,
 			segments: info.segments,
 			endscreen: info.endscreen,
@@ -36,16 +37,14 @@ class Player {
 		this.player.parentElement.insertBefore(this.root, this.player);
 		this.root.insertBefore(this.player, this.root.firstElementChild);
 
-		if (info.hlsManifest) {
+		if (info.hlsManifest && typeof Hls != "undefined") {
 			if (Hls.isSupported()) {
 				this.playerType = "hls.js";
 				this.hlsjs = new Hls();
 				this.hlsjs.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-					console.log(`[HLS.JS] Manifest parsed with ${data.levels.length} quality levels`);
 					this.updateSelects();
 				});
 				this.hlsjs.on(Hls.Events.LEVEL_SWITCHED, (event, {level}) => {
-					console.log(`[HLS.JS] Switched to the quality level ${this.hlsjs.levels[level].height}p (${level})`);
 					this.updateSelects();
 				});
 				this.hlsjs.loadSource(info.hlsManifest);
@@ -178,6 +177,11 @@ class Player {
 		timestamp.innerHTML = "--:-- / --:--";
 		element5.appendChild(timestamp);
 
+		const skipToLive = document.createElement("DIV");
+		skipToLive.setAttribute("class", "ltp-controls-button");
+		skipToLive.innerHTML = model.skipToLiveHtml;
+		element5.appendChild(skipToLive);
+
 		const element6 = document.createElement("DIV");
 		element6.setAttribute("class", "ltp-controls-divider");
 		element5.appendChild(element6);
@@ -285,7 +289,8 @@ class Player {
 				mute: buttonMute,
 				settings: buttonSettings,
 				fullscreen: buttonFullscreen,
-				skip: buttonSkip
+				skip: buttonSkip,
+				skipToLive: skipToLive
 			},
 			menus: {
 				menu: menu,
@@ -331,24 +336,7 @@ class Player {
 			else this.player.pause()
 		}
 		this.player.ondblclick = () => {
-			if (window.fullScreen)
-				document.exitFullscreen()
-					.then(() => {
-						this.updateButtons();
-					})
-					.catch(() => {
-						this.updateButtons();
-					});
-			else
-				this.root.requestFullscreen({
-					navigationUI: "hide"
-				})
-					.then(() => {
-						this.updateButtons();
-					})
-					.catch(() => {
-						this.updateButtons();
-					});
+			this.toggleFullscreen()
 		}
 
 		this.addMouseMoveEvents(this.elements.root)
@@ -358,15 +346,12 @@ class Player {
 			this.updateButtons();
 		}
 
+		this.elements.buttons.skipToLive.onclick = () => {
+			this.player.currentTime = this.player.duration;
+		}
+
 		this.elements.buttons.fullscreen.onclick = () => {
-			let promise = window.fullScreen ? document.exitFullscreen() : this.root.requestFullscreen({
-				navigationUI: "hide"
-			})
-			promise.then(() => {
-				this.updateButtons();
-			}).catch(() => {
-				this.updateButtons();
-			})
+			this.toggleFullscreen()
 		}
 
 		this.player.ontimeupdate = () => {
@@ -480,9 +465,43 @@ class Player {
 		setInterval(() => {
 			if (this.player.buffered.length > 0)
 				this.resizeProgressBar("buffered", (this.player.buffered.end(this.player.buffered.length - 1) / this.player.duration) * 100, true)
-			this.elements.timestamp.innerText = `${this.timestampFromMs(this.player.currentTime)} / ${this.timestampFromMs(this.player.duration)}`;
+			if (this.playerType === "hls.js" &&
+				this.hlsjs.levels.map(x => x.details?.live || false).includes(true)) { // easily the worst way to check if were playing a live content
+				let offset = this.player.currentTime - this.player.duration;
+				if (offset < -30) {
+					this.elements.timestamp.innerText = `-${this.timestampFromMs(-offset)}`;
+					this.elements.buttons.skipToLive.style.display = "flex";
+				} else {
+					this.elements.timestamp.innerText = `Live`;
+					this.elements.buttons.skipToLive.style.display = "none";
+				}
+			} else {
+				this.elements.buttons.skipToLive.style.display = "none";
+				this.elements.timestamp.innerText = `${this.timestampFromMs(this.player.currentTime)} / ${this.timestampFromMs(this.player.duration)}`;
+			}
 			this.updateLoading();
 		}, 100);
+
+
+		// required because iPhones do not support the fullscreenchange event
+		if ([
+				'iPad Simulator',
+				'iPhone Simulator',
+				'iPod Simulator',
+				'iPad',
+				'iPhone',
+				'iPod'
+			].includes(navigator.platform)
+			// iPad on iOS 13 detection
+			|| (navigator.userAgent.includes("Mac") && "ontouchend" in document)) {
+			setInterval(() => {
+				this.updateButtons()
+			}, 500);
+		} else {
+			document.addEventListener("fullscreenchange", event => {
+				this.updateButtons()
+			});
+		}
 	}
 
 	addMouseMoveEvents(el) {
@@ -538,7 +557,7 @@ class Player {
 			case "html5":
 				const elements = Array.from(this.player.children);
 				const videoTracks = elements.filter(x => x.tagName === "SOURCE");
-				const textTracks = Array.from(this.player.textTracks).filter(x => x.groupId === "vtt");
+				const textTracks = Array.from(this.player.textTracks);
 
 				if (videoTracks.length > 1) {
 					let foundQuality = false;
@@ -620,8 +639,7 @@ class Player {
 
 				// subtitles
 				// using HTML subtitles cus i couldnt get hls.js subtitles to work :33
-				const textTracks2 = Array.from(this.player.textTracks).filter(x => x.groupId === "vtt");
-				console.log(textTracks2)
+				const textTracks2 = Array.from(this.player.textTracks);
 				if (textTracks2.length > 0) {
 					let foundSubtitles = false;
 					let subtitles = [];
@@ -657,7 +675,12 @@ class Player {
 				this.elements.storyboard.container.style.display = "none";
 		} else {
 			let seconds = progress * this.player.duration;
-			this.elements.storyboard.text.innerText = this.timestampFromMs(seconds);
+			if (this.playerType === "hls.js" &&
+				this.hlsjs.levels.map(x => x.details?.live || false).includes(true)) { // easily the worst way to check if were playing a live content
+				this.elements.storyboard.text.innerText = "-" + this.timestampFromMs(this.player.duration-seconds);
+			} else {
+				this.elements.storyboard.text.innerText = this.timestampFromMs(seconds);
+			}
 
 			if (progress < .5) {
 				this.elements.storyboard.container.style.left = `calc(${Math.max(0, progress * 100)}% - 87.5px)`;
@@ -731,7 +754,7 @@ class Player {
 				this.player.currentTime = this.player.duration * 0.9;
 				return true;
 			case "f":
-				this.elements.buttons.fullscreen.click();
+				this.toggleFullscreen();
 				return true;
 			case "arrowup":
 				try {
@@ -865,5 +888,31 @@ class Player {
 		if (this.player.currentTime >= (this.player.duration - 0.002)) buffering = false;
 
 		this.elements.loading.style.display = buffering ? "flex" : "none";
+	}
+
+	enterFullscreen() {
+		this.root.requestFullscreen({
+			navigationUI: "hide"
+		}).then(() => {
+			this.updateButtons()
+		}).catch(() => {
+			this.updateButtons()
+		});
+	}
+
+	exitFullscreen() {
+		document.exitFullscreen().then(() => {
+			this.updateButtons()
+		}).catch(() => {
+			this.updateButtons()
+		});
+	}
+
+	toggleFullscreen() {
+		if (document.fullscreenElement) {
+			this.exitFullscreen();
+		} else {
+			this.enterFullscreen();
+		}
 	}
 }

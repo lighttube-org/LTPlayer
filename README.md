@@ -32,7 +32,8 @@ snippet:
 			volumeHigh: '🔊',
 			settings: '⚙',
 			fullscreen: '🔳',
-			minimize: '🔲'
+			minimize: '🔲',
+			skipToLiveHtml: '⏩'
 		}
 	});
 </script>
